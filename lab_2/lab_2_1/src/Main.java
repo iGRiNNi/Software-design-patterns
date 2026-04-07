@@ -1,24 +1,57 @@
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+
 
 public class Main {
     public static void main(String[] args) {
-        String[] lines = {
+        String[] sourceLines = {
                 "Наступит день, уйдёт печаль",
-                "Придет весна, уйдёт февраль",
+                "Придет весна, уйдёт февраль"
         };
 
-        try (TextAdapter adapter = new TextAdapter(new FileOutputStream("output.txt"))) {
-            adapter.printText(lines);
-            System.out.println("Текст записан в файл output.txt");
-        } catch (IOException e) {
-            System.out.println("Ошибка записи: " + e.getMessage());
-        }
+        System.out.println("Исходные строки:");
+        printLines(sourceLines);
 
-        try (TextAdapter adapter = new TextAdapter(System.out)) {
-            adapter.printText(lines);
+        try {
+            byte[] bytes = writeToBytes(sourceLines);
+            System.out.println("Строки конвертированные в байты:");
+            printBytes(bytes);
+
+            String[] restoredLines = readFromBytes(bytes);
+            System.out.println("Строки полученные из байтов:");
+            printLines(restoredLines);
         } catch (IOException e) {
-            System.out.println("Ошибка записи: " + e.getMessage());
+            System.out.println("Ошибка ввода-вывода: " + e.getMessage());
         }
+    }
+
+    private static byte[] writeToBytes(String[] lines) throws IOException {
+        try (ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+             TextWriterAdapter writerAdapter = new TextWriterAdapter(byteOut)) {
+
+            writerAdapter.printText(lines);
+            return byteOut.toByteArray();
+        }
+    }
+
+    private static String[] readFromBytes(byte[] bytes) throws IOException {
+        try (ByteArrayInputStream byteIn = new ByteArrayInputStream(bytes);
+             TextReaderAdapter readerAdapter = new TextReaderAdapter(byteIn)) {
+
+            return readerAdapter.readText();
+        }
+    }
+
+    private static void printLines( String[] lines) {
+        for (String line : lines) {
+            System.out.println(line);
+        }
+        System.out.println();
+    }
+
+    private static void printBytes(byte[] bytes) {
+        for (byte b : bytes) {
+            System.out.print(b + " ");
+        }
+        System.out.println("\n");
     }
 }
