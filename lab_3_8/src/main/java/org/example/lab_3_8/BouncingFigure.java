@@ -8,7 +8,7 @@ import javafx.scene.shape.Shape;
 import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class BouncingFigure implements Runnable {
-    private static final int DELAY = 15;
+    private static final int DELAY = 7;
 
     protected final double fieldWidth;
     protected final double fieldHeight;
