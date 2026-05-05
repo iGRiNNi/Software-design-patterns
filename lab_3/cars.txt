@@ -1,0 +1,5 @@
+Brand: BMW; Model: X5, price: 5000000.0; Model: X3, price: 4200000.0; Model: M5, price: 8500000.0.
+Brand: BMW
+Model: X5, price: 5000000.0
+Model: X3, price: 4200000.0
+Model: M5, price: 8500000.0

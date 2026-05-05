@@ -1,0 +1,8 @@
+Brand: Alfa Romeo; Model: 0, price: 14135.049656105924.
+Brand: BMW
+Model: 0, price: 59406.03760130757
+Model: 1, price: 55908.87051818478
+Model: 2, price: 50366.03810780717
+Model: 3, price: 86080.80603073604
+Model: 4, price: 23770.506356497946
+
