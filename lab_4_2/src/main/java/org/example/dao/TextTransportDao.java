@@ -7,7 +7,9 @@ import org.example.transport.Transportable;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public class TextTransportDao implements TransportDao {
 
@@ -53,6 +55,40 @@ public class TextTransportDao implements TransportDao {
         } catch (DuplicateModelNameException e) {
             throw new DaoException("В файле есть повторяющаяся модель.", e);
         }
+    }
+
+    @Override
+    public void write(String fileName, Transportable transport) throws DaoException {
+        if (transport == null) {
+            throw new DaoException("Transport не должен быть null.");
+        }
+
+        try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))) {
+            writer.println(getTransportType(transport));
+            writer.println(transport.getBrand());
+            writer.println(transport.getModelArraySize());
+
+            String[] models = transport.getModelsNames();
+            double[] prices = transport.getModelsPrice();
+
+            for (int i = 0; i < models.length; i++) {
+                writer.println(models[i] + ";" + prices[i]);
+            }
+        } catch (IOException e) {
+            throw new DaoException("Ошибка записи в текстовый файл.", e);
+        }
+    }
+
+    private String getTransportType(Transportable transport) throws DaoException {
+        if (transport instanceof Car) {
+            return "Car";
+        }
+
+        if (transport instanceof Motorbike) {
+            return "Motorbike";
+        }
+
+        throw new DaoException("Неизвестный тип транспорта: " + transport.getClass().getName());
     }
 
     private Transportable createTransport(String type, String brand) throws DaoException {

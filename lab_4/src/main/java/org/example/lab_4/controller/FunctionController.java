@@ -43,13 +43,21 @@ public class FunctionController {
         );
 
         view.getXColumn().setCellFactory(
-                TextFieldTableCell.forTableColumn(new CommaDoubleStringConverter())
+        TextFieldTableCell.forTableColumn(new SafeDoubleStringConverter())
         );
 
         view.getXColumn().setOnEditCommit(event -> {
             FunctionPoint point = event.getRowValue();
+
+            Double newValue = event.getNewValue();
+
+            if (newValue == null) {
+                view.getTable().refresh();
+                return;
+            }
+
+            double newX = newValue;
             double oldX = event.getOldValue();
-            double newX = event.getNewValue();
 
             if (model.containsXExcept(newX, point)) {
                 showError("Значение x = " + newX + " уже есть в таблице.");
@@ -163,7 +171,7 @@ public class FunctionController {
         alert.showAndWait();
     }
 
-    private static class CommaDoubleStringConverter extends StringConverter<Double> {
+    private class SafeDoubleStringConverter extends StringConverter<Double> {
 
         @Override
         public String toString(Double value) {
@@ -177,10 +185,16 @@ public class FunctionController {
         @Override
         public Double fromString(String text) {
             if (text == null || text.trim().isEmpty()) {
-                throw new NumberFormatException("Empty value");
+                showError("Введите значение x.");
+                return null;
             }
 
-            return Double.parseDouble(text.trim().replace(',', '.'));
+            try {
+                return parseDouble(text.trim());
+            } catch (NumberFormatException e) {
+                showError("Значение x должно быть числом. Можно вводить через точку или запятую.");
+                return null;
+            }
         }
     }
 }
